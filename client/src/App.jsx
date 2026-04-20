@@ -31,7 +31,7 @@ const AppContent = () => {
   return (
     <div className="dashboard-container">
       <Sidebar />
-      <main className="main-content w-full">
+      <main className="main-content">
         <Routes>
           <Route path="/" element={<ProtectedRoute allowedRoles={['HR']}><Dashboard /></ProtectedRoute>} />
           <Route path="/employees" element={<ProtectedRoute allowedRoles={['HR']}><EmployeeList /></ProtectedRoute>} />

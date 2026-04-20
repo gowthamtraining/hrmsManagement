@@ -122,73 +122,81 @@ const EmployeePortal = () => {
     };
 
     return (
-        <div className="w-full pb-20">
-            <header className="mb-10">
-                <h1 className="text-3xl font-extrabold mb-1">Welcome, <span className="gradient-text">{user?.name}</span></h1>
-                <p className="text-text-secondary font-medium">Employee Self-Service Portal</p>
+        <div style={{ width: '100%', paddingBottom: '4rem' }}>
+            <header style={{ marginBottom: '2.5rem' }}>
+                <h1 style={{ marginBottom: '0.4rem' }}>
+                    Welcome, <span className="gradient-text">{user?.name}</span>
+                </h1>
+                <p style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Employee Self-Service Portal</p>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="card md:col-span-1">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-3 bg-primary/20 rounded-2xl text-primary">
-                            <Clock size={24} />
+            {/* Top Row: Shift Log + Latest Disbursement */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                {/* Shift Log */}
+                <div className="card" style={{ flex: '1 1 260px', minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '1.5rem' }}>
+                        <div style={{ padding: '0.625rem', background: 'rgba(99,102,241,0.18)', borderRadius: '0.875rem', lineHeight: 0, flexShrink: 0 }}>
+                            <Clock size={22} color="#818cf8" />
                         </div>
-                        <h3 className="text-xl font-bold">Shift Log</h3>
+                        <h3 style={{ fontWeight: 700 }}>Shift Log</h3>
                     </div>
-                    
-                    <div className="mb-6">
-                        <p className="text-text-secondary text-sm font-medium mb-1 uppercase tracking-wider">Current Status</p>
-                        <p className="text-lg font-bold">
-                            {attendanceRecord 
-                                ? (attendanceRecord.checkOut ? "Shift Completed" : "Currently On Clock") 
-                                : "Awaiting Check-in"}
+
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'rgba(148,163,184,0.55)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '0.4rem' }}>
+                            Current Status
+                        </p>
+                        <p style={{ fontSize: '1.1rem', fontWeight: 700 }}>
+                            {attendanceRecord
+                                ? (attendanceRecord.checkOut ? 'Shift Completed' : 'Currently On Clock')
+                                : 'Awaiting Check-in'}
                         </p>
                         {attendanceRecord?.checkIn && !attendanceRecord.checkOut && (
-                            <p className="text-xs text-secondary mt-1 font-semibold flex items-center gap-1">
-                                <div className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></div>
-                                Started at {new Date(attendanceRecord.checkIn).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                            <p style={{ fontSize: '0.8rem', color: '#34d399', marginTop: '0.4rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                <span className="animate-pulse" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#34d399', display: 'inline-block', flexShrink: 0 }} />
+                                Started at {new Date(attendanceRecord.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
                         )}
                     </div>
-                    
+
                     {!attendanceRecord ? (
-                        <button onClick={handleCheckIn} className="btn btn-primary w-full shadow-lg shadow-primary/20">
-                            <CheckCircle size={18} className="mr-2" /> Mark Present
+                        <button onClick={handleCheckIn} className="btn btn-primary" style={{ width: '100%' }}>
+                            <CheckCircle size={18} style={{ marginRight: '0.5rem' }} /> Mark Present
                         </button>
                     ) : !attendanceRecord.checkOut ? (
-                        <button onClick={handleCheckOut} className="btn bg-amber-500 hover:bg-amber-600 border-none text-white w-full shadow-lg shadow-amber-500/20">
-                            <Clock size={18} className="mr-2" /> End Shift
+                        <button onClick={handleCheckOut} className="btn" style={{ width: '100%', background: '#f59e0b', color: '#fff', border: 'none', boxShadow: '0 4px 15px rgba(245,158,11,0.3)' }}>
+                            <Clock size={18} style={{ marginRight: '0.5rem' }} /> End Shift
                         </button>
                     ) : (
-                        <div className="p-4 bg-secondary/10 rounded-2xl border border-secondary/20 text-secondary text-center font-bold flex items-center justify-center gap-2">
-                             <CheckCircle size={18} /> Daily Goal Met
+                        <div style={{ padding: '0.875rem', background: 'rgba(16,185,129,0.1)', borderRadius: '0.875rem', border: '1px solid rgba(16,185,129,0.2)', color: '#34d399', textAlign: 'center', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                            <CheckCircle size={18} /> Daily Goal Met
                         </div>
                     )}
                 </div>
 
-                <div className="card md:col-span-2 flex flex-col justify-between overflow-hidden relative">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 blur-3xl rounded-full"></div>
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="p-3 bg-secondary/20 rounded-2xl text-secondary">
-                                <FileDown size={24} />
+                {/* Latest Disbursement */}
+                <div className="card" style={{ flex: '2 1 340px', minWidth: 0, position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: '-2rem', right: '-2rem', width: '160px', height: '160px', background: 'rgba(16,185,129,0.08)', borderRadius: '50%', filter: 'blur(50px)', pointerEvents: 'none' }} />
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '2rem' }}>
+                            <div style={{ padding: '0.625rem', background: 'rgba(16,185,129,0.18)', borderRadius: '0.875rem', lineHeight: 0, flexShrink: 0 }}>
+                                <FileDown size={22} color="#34d399" />
                             </div>
-                            <h3 className="text-xl font-bold">Latest Disbursement</h3>
+                            <h3 style={{ fontWeight: 700 }}>Latest Disbursement</h3>
                         </div>
-                        
-                        <div className="flex items-end justify-between">
+                        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1rem' }}>
                             <div>
-                                <p className="text-4xl font-black mb-2">
+                                <p style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', fontWeight: 900, lineHeight: 1, marginBottom: '0.5rem' }}>
                                     {history.length > 0 ? `$${history[0].netPay.toLocaleString()}` : '$0.00'}
                                 </p>
-                                <p className="text-text-secondary font-semibold uppercase tracking-widest text-[10px]">
-                                    {history.length > 0 ? `Credited for ${history[0].month} • ${new Date(history[0].createdAt).toLocaleDateString()}` : 'No disbursement data available'}
+                                <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'rgba(148,163,184,0.55)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+                                    {history.length > 0
+                                        ? `Credited for ${history[0].month} · ${new Date(history[0].createdAt).toLocaleDateString()}`
+                                        : 'No disbursement data available'}
                                 </p>
                             </div>
                             {history.length > 0 && (
-                                <button onClick={() => downloadPDF(history[0])} className="btn btn-outline border-white/10 hover:bg-white/5 py-4 px-6 text-sm">
-                                    <FileDown size={18} className="mr-2" /> Download Slip
+                                <button onClick={() => downloadPDF(history[0])} className="btn btn-outline" style={{ flexShrink: 0 }}>
+                                    <FileDown size={18} style={{ marginRight: '0.5rem' }} /> Download Slip
                                 </button>
                             )}
                         </div>
@@ -196,25 +204,28 @@ const EmployeePortal = () => {
                 </div>
             </div>
 
-            <div className="card mb-8 p-10 bg-white/5 border-dashed relative overflow-hidden">
-                <div className="absolute inset-0 bg-primary/5 blur-[100px] pointer-events-none"></div>
-                <div className="flex flex-col xl:flex-row items-center justify-between gap-10 relative z-10">
-                    <div className="text-center xl:text-left">
-                        <h3 className="text-2xl font-bold mb-3">Rate your work environment</h3>
-                        <p className="text-text-secondary max-w-md">Your pulse helps us tweak the workspace for maximum creativity and comfort.</p>
+            {/* NPS Survey */}
+            <div className="card" style={{ marginBottom: '1.5rem', background: 'rgba(99,102,241,0.03)', borderStyle: 'dashed', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', inset: 0, background: 'rgba(99,102,241,0.04)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', position: 'relative', zIndex: 1 }}>
+                    <div>
+                        <h3 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Rate your work environment</h3>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', maxWidth: '420px', lineHeight: 1.6 }}>Your pulse helps us fine-tune the workspace for maximum comfort.</p>
                     </div>
                     {surveySubmitted ? (
-                        <div className="flex flex-col items-center bg-secondary/10 px-10 py-6 rounded-3xl border border-secondary/20">
-                            <CheckCircle size={40} className="text-secondary mb-4" />
-                            <span className="font-bold text-lg text-secondary">Thanks! You rated us {npsScore}/10</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'rgba(16,185,129,0.1)', padding: '1.25rem 2rem', borderRadius: '1.25rem', border: '1px solid rgba(16,185,129,0.2)' }}>
+                            <CheckCircle size={36} color="#34d399" style={{ marginBottom: '0.75rem' }} />
+                            <span style={{ fontWeight: 700, color: '#34d399' }}>Thanks! You rated us {npsScore}/10</span>
                         </div>
                     ) : (
-                        <div className="flex flex-wrap justify-center gap-3">
-                            {[...Array(11).keys()].map((n) => (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
+                            {[...Array(11).keys()].map(n => (
                                 <button
                                     key={n}
                                     onClick={() => submitNPS(n)}
-                                    className="w-12 h-12 rounded-full border border-white/10 hover:bg-primary hover:border-primary hover:text-white transition-all text-sm font-bold flex items-center justify-center bg-white/5 hover:scale-110 active:scale-95 shadow-md"
+                                    style={{ width: '44px', height: '44px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.04)', color: '#fff', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', transition: 'all 0.2s' }}
+                                    onMouseEnter={e => { e.target.style.background = '#6366f1'; e.target.style.borderColor = '#6366f1'; e.target.style.transform = 'scale(1.12)'; }}
+                                    onMouseLeave={e => { e.target.style.background = 'rgba(255,255,255,0.04)'; e.target.style.borderColor = 'rgba(255,255,255,0.12)'; e.target.style.transform = 'scale(1)'; }}
                                 >
                                     {n}
                                 </button>

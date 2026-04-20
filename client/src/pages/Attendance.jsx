@@ -45,17 +45,17 @@ const Attendance = () => {
     };
 
     return (
-        <div className="max-w-6xl mx-auto py-8">
-            <header className="mb-12">
-                <h1 className="text-4xl font-black mb-3">Daily <span className="gradient-text">Attendance</span></h1>
-                <p className="text-text-secondary font-medium text-lg">Real-time workforce activity and shift status.</p>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', paddingBottom: '4rem' }}>
+            <header style={{ marginBottom: '2.5rem' }}>
+                <h1 style={{ marginBottom: '0.5rem' }}>Daily <span className="gradient-text">Attendance</span></h1>
+                <p style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Real-time workforce activity and shift tracking.</p>
             </header>
- 
-            <div className="card overflow-hidden">
+
+            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
                 <div className="table-container">
-                    <table className="w-full text-left">
+                    <table style={{ width: '100%', minWidth: '640px' }}>
                         <thead>
-                            <tr className="bg-white/[0.02]">
+                            <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
                                 <th className="py-6 px-8">Employee</th>
                                 <th className="py-6 px-8">Team</th>
                                 <th className="py-6 px-8">Check In</th>

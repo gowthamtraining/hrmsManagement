@@ -54,29 +54,28 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="w-full relative">
-            {/* Decorative background glows */}
-            <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 blur-[120px] rounded-full pointer-events-none"></div>
-            <div className="absolute top-1/2 -left-20 w-80 h-80 bg-secondary/5 blur-[120px] rounded-full pointer-events-none"></div>
+        <div style={{ width: '100%', position: 'relative', paddingBottom: '3rem' }}>
+            {/* Decorative glows */}
+            <div style={{ position: 'absolute', top: '-5rem', right: '-3rem', width: '300px', height: '300px', background: 'rgba(99,102,241,0.1)', borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: '40%', left: '-4rem', width: '350px', height: '350px', background: 'rgba(16,185,129,0.06)', borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none' }} />
 
-            <header className="flex justify-between items-center mb-10 relative z-10">
+            {/* Header */}
+            <header style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem', position: 'relative', zIndex: 1 }}>
                 <div>
-                    <h1 className="text-4xl font-black mb-2 tracking-tighter">HR Insights <span className="gradient-text">Overview</span></h1>
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                        <p className="text-text-secondary font-semibold text-xs uppercase tracking-widest">Live System Analytics • Q2 2026</p>
+                    <h1 style={{ marginBottom: '0.5rem' }}>HR <span className="gradient-text">Overview</span></h1>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} className="animate-pulse" />
+                        <p style={{ color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.12em' }}>Live Analytics · Q2 2026</p>
                     </div>
                 </div>
-                <div className="flex gap-4">
-                    <button className="btn btn-outline border-white/10 hover:bg-white/5">
-                        <Calendar size={18} className="mr-2" /> Schedule Report
-                    </button>
-                    <button 
-                        className="btn btn-primary shadow-lg shadow-primary/30"
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <button
+                        className="btn btn-primary"
                         onClick={handleAISummary}
                         disabled={isAiLoading}
+                        style={{ fontSize: '0.85rem' }}
                     >
-                        {isAiLoading ? <Sparkles className="animate-spin mr-2" size={18} /> : <Sparkles size={18} className="mr-2" />}
+                        {isAiLoading ? <Sparkles className="animate-spin" size={16} style={{ marginRight: '0.5rem' }} /> : <Sparkles size={16} style={{ marginRight: '0.5rem' }} />}
                         {isAiLoading ? 'Analyzing...' : 'AI Summary'}
                     </button>
                 </div>
@@ -102,24 +101,22 @@ const Dashboard = () => {
                 </div>
             )}
 
-            <div className="stats-grid mb-10 relative z-10">
+            <div className="stats-grid" style={{ marginBottom: '2.5rem', position: 'relative', zIndex: 1 }}>
                 <StatCard title="Active Workforce" value={stats.totalWorkforce} icon={<Users size={24} />} color="#6366f1" trend="+12.5%" />
                 <StatCard title="AI Resumes Screened" value={stats.aiResumesScreened} icon={<FileCheck size={24} />} color="#10b981" trend="+24.1%" />
                 <StatCard title="Employee NPS" value={stats.employeeNps} icon={<TrendingUp size={24} />} color="#f59e0b" trend="+3.2%" />
                 <StatCard title="Open Postings" value={stats.openPostings} icon={<Calendar size={24} />} color="#3b82f6" />
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-8 mb-10 relative z-10">
-                <div className="card flex-[1.5]" style={{ minHeight: '400px', background: 'rgba(15, 23, 42, 0.4)' }}>
-                    <div className="flex justify-between items-center mb-8">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2.5rem', position: 'relative', zIndex: 1 }}>
+                <div className="card" style={{ flex: '2 1 320px', minHeight: '380px', background: 'rgba(15,23,42,0.4)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                         <div>
-                            <h3 className="text-xl font-bold">Performance Matrix</h3>
-                            <p className="text-text-secondary text-xs mt-1">Cross-departmental performance index</p>
+                            <h3 style={{ fontWeight: 700 }}>Performance Matrix</h3>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', marginTop: '0.25rem' }}>Cross-departmental performance index</p>
                         </div>
-                        <div className="flex gap-2">
-                           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-[10px] font-bold uppercase tracking-wider">
-                               <div className="w-2 h-2 rounded-full bg-primary"></div> Efficiency
-                           </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.75rem', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)' }}>
+                            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#6366f1' }} /> Efficiency
                         </div>
                     </div>
                     <div style={{ height: '280px', width: '100%' }}>
@@ -134,28 +131,22 @@ const Dashboard = () => {
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
                                 <XAxis dataKey="name" fontSize={10} tick={{fill: '#64748b', fontWeight: 600}} axisLine={{stroke: 'rgba(255,255,255,0.05)'}} tickLine={false} dy={10} />
                                 <YAxis fontSize={10} tick={{fill: '#64748b', fontWeight: 600}} axisLine={false} tickLine={false} />
-                                <Tooltip 
-                                    contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', fontSize: '12px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)' }} 
-                                    itemStyle={{ color: '#fff', fontWeight: 700 }}
-                                />
+                                <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', fontSize: '12px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)' }} itemStyle={{ color: '#fff', fontWeight: 700 }} />
                                 <Area type="monotone" dataKey="performance" stroke="#6366f1" strokeWidth={4} fillOpacity={1} fill="url(#colorPerf)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
-                <div className="card flex-1" style={{ minHeight: '400px', background: 'rgba(15, 23, 42, 0.4)' }}>
-                    <h3 className="text-xl font-bold mb-8">Hiring Velocity</h3>
+                <div className="card" style={{ flex: '1 1 260px', minHeight: '380px', background: 'rgba(15,23,42,0.4)' }}>
+                    <h3 style={{ fontWeight: 700, marginBottom: '1.5rem' }}>Hiring Velocity</h3>
                     <div style={{ height: '280px', width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={stats.chartData}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
                                 <XAxis dataKey="name" fontSize={10} tick={{fill: '#64748b', fontWeight: 600}} axisLine={false} tickLine={false} dy={10} />
                                 <YAxis fontSize={10} tick={{fill: '#64748b', fontWeight: 600}} axisLine={false} tickLine={false} />
-                                <Tooltip 
-                                    cursor={{fill: 'rgba(255,255,255,0.03)'}}
-                                    contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', fontSize: '12px' }} 
-                                />
+                                <Tooltip cursor={{fill: 'rgba(255,255,255,0.03)'}} contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', fontSize: '12px' }} />
                                 <Bar dataKey="count" fill="#10b981" radius={[6, 6, 0, 0]} barSize={24} />
                             </BarChart>
                         </ResponsiveContainer>

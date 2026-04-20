@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DollarSign, FileText, Loader2, Sparkles, AlertCircle, Search } from 'lucide-react';
-import { motion } from 'framer-motion';
 import API_BASE_URL from '../config';
 
 const Payroll = () => {
@@ -9,18 +8,18 @@ const Payroll = () => {
     const [payrollData, setPayrollData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [calcLoading, setCalcLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         axios.get(`${API_BASE_URL}/employees`)
-            .then(res => {
-                setEmployees(res.data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error(err);
-                setLoading(false);
-            });
+            .then(res => { setEmployees(res.data); setLoading(false); })
+            .catch(err => { console.error(err); setLoading(false); });
     }, []);
+
+    const filteredEmployees = employees.filter(e =>
+        e.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        e.position?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const calculatePayroll = async (id) => {
         setCalcLoading(id);
@@ -52,139 +51,154 @@ const Payroll = () => {
         setCalcLoading(false);
     };
 
+    const rowHover = (e, enter) => {
+        e.currentTarget.style.borderColor = enter ? 'rgba(99,102,241,0.3)' : 'rgba(255,255,255,0.06)';
+        e.currentTarget.style.background = enter ? 'rgba(255,255,255,0.02)' : 'transparent';
+    };
+
     return (
-        <div className="max-w-6xl mx-auto pb-20">
-            <header className="mb-10">
-                <h1 className="mb-2">Automated <span className="gradient-text">Payroll</span></h1>
-                <p className="text-text-secondary font-medium">Instantly calculate net pay based on current attendance records.</p>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', paddingBottom: '4rem' }}>
+            <header style={{ marginBottom: '2.5rem' }}>
+                <h1 style={{ marginBottom: '0.5rem' }}>Automated <span className="gradient-text">Payroll</span></h1>
+                <p style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Calculate net pay based on real-time attendance records.</p>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="card">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-10">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-primary/20 rounded-2xl text-primary shadow-inner">
-                                    <DollarSign size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="text-2xl font-black tracking-tight leading-none mb-1">Select Employee</h3>
-                                    <p className="text-[10px] font-bold text-text-secondary uppercase tracking-[0.2em]">Active Payroll Directory</p>
-                                </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
+                {/* Employee List */}
+                <div className="card" style={{ flex: '1 1 340px', minWidth: 0 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '1.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+                            <div style={{ padding: '0.625rem', background: 'rgba(99,102,241,0.18)', borderRadius: '0.875rem', color: '#818cf8', lineHeight: 0, flexShrink: 0 }}>
+                                <DollarSign size={22} />
                             </div>
-                            <div className="relative group w-full md:w-auto">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <Search size={18} className="text-text-muted transition-colors group-focus-within:text-primary" />
-                                </div>
-                                <input 
-                                    type="text" 
-                                    placeholder="Identify professional..." 
-                                    className="w-full md:w-80 bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-5 text-sm font-medium focus:bg-white/[0.08] focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all outline-none" 
-                                />
+                            <div>
+                                <h3 style={{ fontWeight: 800, fontSize: '1.1rem', marginBottom: '0.1rem' }}>Select Employee</h3>
+                                <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(148,163,184,0.55)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Active Payroll Directory</p>
                             </div>
                         </div>
-
-                        <div className="flex flex-col gap-4">
-                            {employees.map(emp => (
-                                <div key={emp._id} className="group flex items-center justify-between p-5 border border-white/5 rounded-3xl hover:bg-white/[0.03] hover:border-primary/30 transition-all duration-300">
-                                    <div className="flex items-center gap-5 w-full">
-                                        <div className="w-12 h-12 flex-shrink-0 rounded-2xl bg-white/5 flex items-center justify-center font-black text-text-secondary group-hover:bg-primary/20 group-hover:text-primary group-hover:scale-110 transition-all duration-300 shadow-inner overflow-hidden">
-                                            {emp.name.charAt(0).toUpperCase()}
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="font-extrabold text-white text-lg tracking-tight mb-1">{emp.name}</p>
-                                            <span className="inline-block text-[10px] font-black text-text-muted uppercase tracking-[0.2em] bg-white/5 px-2 py-1 rounded-md border border-white/5">
-                                                {emp.position}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="flex-shrink-0 ml-4">
-                                        <button 
-                                            onClick={() => calculatePayroll(emp._id)}
-                                            className="btn btn-primary py-2.5 px-6 text-xs font-black shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
-                                            disabled={calcLoading === emp._id}
-                                        >
-                                            {calcLoading === emp._id ? <Loader2 className="animate-spin" size={14} /> : 'PROCESS'}
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                            {employees.length === 0 && !loading && (
-                                <div className="p-12 text-center text-text-secondary border-2 border-dashed border-white/5 rounded-3xl">
-                                    <AlertCircle className="mx-auto mb-4 opacity-50" size={40} />
-                                    <p className="font-medium text-lg mb-1">No employees found</p>
-                                    <p className="text-sm opacity-50">Ensure you have added employees to the directory.</p>
-                                </div>
-                            )}
+                        <div style={{ position: 'relative', flexGrow: 1, maxWidth: '260px', minWidth: '140px' }}>
+                            <div style={{ position: 'absolute', top: '50%', left: '0.875rem', transform: 'translateY(-50%)', color: 'rgba(148,163,184,0.4)', lineHeight: 0, pointerEvents: 'none' }}>
+                                <Search size={16} />
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Search employee..."
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                                style={{ paddingLeft: '2.5rem', paddingTop: '0.625rem', paddingBottom: '0.625rem', fontSize: '0.85rem', borderRadius: '0.875rem', background: 'rgba(255,255,255,0.04)' }}
+                            />
                         </div>
                     </div>
-                </div>
 
-                <div className="lg:col-span-2">
-                    <div className="card h-full relative overflow-hidden bg-primary/5 border-primary/20 min-h-[500px]">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full point-events-none translate-x-1/2 -translate-y-1/2"></div>
-                        
-                        <div className="flex items-center gap-3 mb-10 relative z-10">
-                            <div className="p-3 bg-white/10 rounded-2xl text-primary border border-white/5 shadow-xl">
-                                <FileText size={20} />
-                            </div>
-                            <h3 className="text-xl font-bold">Calculation Summary</h3>
-                        </div>
-                        
-                        {payrollData ? (
-                            <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="relative z-10">
-                                <div className="bg-bg-main/40 backdrop-blur-xl p-8 rounded-3xl border border-white/10 mb-8 shadow-2xl">
-                                    <div className="flex justify-between items-start mb-8">
-                                        <div>
-                                            <p className="text-xs font-bold text-text-secondary uppercase tracking-widest mb-1">Employee Details</p>
-                                            <p className="text-2xl font-black">{payrollData.employee}</p>
-                                        </div>
-                                        <div className="px-3 py-1.5 bg-primary/20 rounded-lg text-primary text-[10px] font-black uppercase tracking-widest">
-                                            {payrollData.month}
-                                        </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                        {filteredEmployees.map(emp => (
+                            <div
+                                key={emp._id}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.875rem 1rem', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '1rem', transition: 'all 0.2s', gap: '0.75rem' }}
+                                onMouseEnter={e => rowHover(e, true)}
+                                onMouseLeave={e => rowHover(e, false)}
+                            >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', flex: 1, minWidth: 0 }}>
+                                    <div style={{ width: '44px', height: '44px', borderRadius: '0.875rem', background: 'linear-gradient(135deg, rgba(99,102,241,0.25), rgba(168,85,247,0.15))', color: '#818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.1rem', flexShrink: 0 }}>
+                                        {emp.name.charAt(0).toUpperCase()}
                                     </div>
-                                    
-                                    <div className="grid grid-cols-2 gap-6 mb-10">
-                                        <div className="space-y-1">
-                                            <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Base Salary</span>
-                                            <p className="text-xl font-bold text-white">${Number(payrollData.baseSalary).toLocaleString()}</p>
-                                        </div>
-                                        <div className="space-y-1">
-                                            <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Attendance Status</span>
-                                            <p className="text-xl font-bold text-[#34d399] tracking-tight">{payrollData.daysPresent || 0} / 22 <span className="text-[10px] text-text-secondary">Days</span></p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="pt-8 border-t border-white/10 flex justify-between items-center">
-                                        <div>
-                                            <p className="text-xs font-bold text-text-secondary uppercase tracking-widest mb-1">Total Net Payable</p>
-                                            <p className="text-4xl font-black text-white drop-shadow-lg">${Number(payrollData.netPay).toLocaleString()}</p>
-                                        </div>
-                                        <div className="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center text-secondary border border-secondary/20">
-                                            <Sparkles size={24} />
-                                        </div>
+                                    <div style={{ minWidth: 0 }}>
+                                        <p style={{ fontWeight: 700, fontSize: '0.95rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: '0.2rem' }}>{emp.name}</p>
+                                        <span style={{ fontSize: '0.63rem', fontWeight: 700, color: 'rgba(148,163,184,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'rgba(255,255,255,0.04)', padding: '0.15rem 0.5rem', borderRadius: '0.35rem', border: '1px solid rgba(255,255,255,0.06)', display: 'inline-block' }}>
+                                            {emp.position}
+                                        </span>
                                     </div>
                                 </div>
-                                
-                                <button 
-                                    onClick={handleDisburse} 
-                                    className="btn btn-primary w-full py-5 text-base shadow-xl shadow-primary/20"
-                                    disabled={calcLoading === true}
+                                <button
+                                    onClick={() => calculatePayroll(emp._id)}
+                                    disabled={calcLoading === emp._id}
+                                    className="btn btn-primary"
+                                    style={{ padding: '0.5rem 1rem', fontSize: '0.75rem', fontWeight: 800, flexShrink: 0 }}
                                 >
-                                    {calcLoading === true ? <Loader2 className="animate-spin mr-2" /> : <Sparkles size={20} className="mr-2" />}
-                                    {calcLoading === true ? 'Disbursing...' : 'Disburse Approved Payment'}
+                                    {calcLoading === emp._id ? <Loader2 className="animate-spin" size={13} /> : 'PROCESS'}
                                 </button>
-                            </motion.div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center h-[300px] text-center p-10 relative z-10">
-                                <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/5 opacity-50">
-                                    <FileText size={32} className="text-text-secondary" />
-                                </div>
-                                <p className="text-lg font-bold text-white mb-2 opacity-80">Pending Calculation</p>
-                                <p className="text-sm text-text-secondary max-w-[240px] leading-relaxed">Select an active employee from the list to begin the automated payroll process.</p>
+                            </div>
+                        ))}
+                        {filteredEmployees.length === 0 && !loading && (
+                            <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)', border: '2px dashed rgba(255,255,255,0.06)', borderRadius: '1.25rem' }}>
+                                <AlertCircle style={{ margin: '0 auto 1rem', opacity: 0.4, display: 'block' }} size={36} />
+                                <p style={{ fontWeight: 600 }}>No employees found</p>
+                                <p style={{ fontSize: '0.85rem', opacity: 0.5, marginTop: '0.25rem' }}>Add employees to the directory first.</p>
                             </div>
                         )}
                     </div>
+                </div>
+
+                {/* Payroll Summary Panel */}
+                <div className="card" style={{ flex: '1 1 300px', minWidth: 0, minHeight: '420px', background: 'rgba(99,102,241,0.04)', borderColor: 'rgba(99,102,241,0.15)', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: '-4rem', right: '-4rem', width: '220px', height: '220px', background: 'rgba(99,102,241,0.12)', borderRadius: '50%', filter: 'blur(70px)', pointerEvents: 'none' }} />
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
+                        <div style={{ padding: '0.625rem', background: 'rgba(255,255,255,0.07)', borderRadius: '0.875rem', border: '1px solid rgba(255,255,255,0.08)', lineHeight: 0, flexShrink: 0 }}>
+                            <FileText size={20} color="#818cf8" />
+                        </div>
+                        <h3 style={{ fontWeight: 700 }}>Calculation Summary</h3>
+                    </div>
+
+                    {payrollData ? (
+                        <div style={{ position: 'relative', zIndex: 1 }}>
+                            <div style={{ background: 'rgba(2,6,23,0.45)', backdropFilter: 'blur(16px)', padding: '1.5rem', borderRadius: '1.25rem', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '1.5rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                    <div>
+                                        <p style={{ fontSize: '0.63rem', fontWeight: 700, color: 'rgba(148,163,184,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '0.25rem' }}>Employee</p>
+                                        <p style={{ fontSize: '1.3rem', fontWeight: 900 }}>{payrollData.employee}</p>
+                                    </div>
+                                    <div style={{ padding: '0.3rem 0.75rem', background: 'rgba(99,102,241,0.18)', borderRadius: '0.5rem', color: '#818cf8', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', alignSelf: 'flex-start' }}>
+                                        {payrollData.month}
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                                    <div>
+                                        <span style={{ display: 'block', fontSize: '0.63rem', fontWeight: 700, color: 'rgba(148,163,184,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.25rem' }}>Base Salary</span>
+                                        <p style={{ fontSize: '1.2rem', fontWeight: 800 }}>${Number(payrollData.baseSalary).toLocaleString()}</p>
+                                    </div>
+                                    <div>
+                                        <span style={{ display: 'block', fontSize: '0.63rem', fontWeight: 700, color: 'rgba(148,163,184,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.25rem' }}>Attendance</span>
+                                        <p style={{ fontSize: '1.2rem', fontWeight: 800, color: '#34d399' }}>
+                                            {payrollData.daysPresent || 0}
+                                            <span style={{ fontSize: '0.7rem', color: 'rgba(148,163,184,0.5)', fontWeight: 600 }}> / 22d</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div style={{ paddingTop: '1.25rem', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div>
+                                        <p style={{ fontSize: '0.63rem', fontWeight: 700, color: 'rgba(148,163,184,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.25rem' }}>Net Payable</p>
+                                        <p style={{ fontSize: '2.25rem', fontWeight: 900, lineHeight: 1 }}>${Number(payrollData.netPay).toLocaleString()}</p>
+                                    </div>
+                                    <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                        <Sparkles size={22} color="#34d399" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleDisburse}
+                                disabled={calcLoading === true}
+                                className="btn btn-primary"
+                                style={{ width: '100%', padding: '1rem', fontSize: '0.95rem', fontWeight: 800, borderRadius: '1rem' }}
+                            >
+                                {calcLoading === true
+                                    ? <><Loader2 className="animate-spin" size={18} style={{ marginRight: '0.5rem' }} /> Disbursing...</>
+                                    : <><Sparkles size={18} style={{ marginRight: '0.5rem' }} /> Disburse Payment</>
+                                }
+                            </button>
+                        </div>
+                    ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                            <div style={{ width: '72px', height: '72px', background: 'rgba(255,255,255,0.04)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem', border: '1px solid rgba(255,255,255,0.06)' }}>
+                                <FileText size={30} color="rgba(148,163,184,0.25)" />
+                            </div>
+                            <p style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: 'rgba(255,255,255,0.65)' }}>Awaiting Selection</p>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', maxWidth: '200px', lineHeight: 1.65 }}>Select an employee from the directory to begin payroll processing.</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
