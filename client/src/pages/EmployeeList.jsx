@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 import { Plus, Search, Edit2, Trash2, Download, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -16,7 +17,7 @@ const EmployeeList = () => {
 
     const fetchEmployees = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/employees');
+            const res = await axios.get(`${API_BASE_URL}/employees`);
             setEmployees(res.data);
         } catch (err) {
             console.error(err);
@@ -28,13 +29,13 @@ const EmployeeList = () => {
         e.preventDefault();
         try {
             if (editingEmpId) {
-                const res = await axios.put(`http://localhost:5000/api/employees/${editingEmpId}`, {
+                const res = await axios.put(`${API_BASE_URL}/employees/${editingEmpId}`, {
                     ...newEmp,
                     salary: Number(newEmp.salary)
                 });
                 setEmployees(employees.map(emp => emp._id === editingEmpId ? res.data : emp));
             } else {
-                const res = await axios.post('http://localhost:5000/api/employees', {
+                const res = await axios.post(`${API_BASE_URL}/employees`, {
                     ...newEmp,
                     salary: Number(newEmp.salary)
                 });
@@ -62,7 +63,7 @@ const EmployeeList = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this employee?")) return;
         try {
-            await axios.delete(`http://localhost:5000/api/employees/${id}`);
+            await axios.delete(`${API_BASE_URL}/employees/${id}`);
             setEmployees(employees.filter(emp => emp._id !== id));
         } catch (err) {
             alert("Error deleting employee");
@@ -111,81 +112,90 @@ const EmployeeList = () => {
     };
 
     return (
-        <div className="w-full">
-            <div className="flex justify-between items-center mb-10">
+        <div className="w-full pb-20">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                 <div>
-                    <h1 className="mb-2">Employee <span className="gradient-text">Directory</span></h1>
-                    <p className="text-text-secondary font-medium uppercase tracking-widest text-[11px]">Global Workforce Management</p>
+                    <h1 className="text-4xl font-black mb-3">Employee <span className="gradient-text">Directory</span></h1>
+                    <p className="text-text-secondary font-bold text-xs uppercase tracking-[0.2em]">Scale your workforce with precision</p>
                 </div>
-                <div className="flex gap-4">
-                    <button className="btn btn-outline" onClick={handleExport}>
+                <div className="flex gap-4 w-full md:w-auto">
+                    <button className="btn btn-outline flex-1 md:flex-none border-white/10" onClick={handleExport}>
                         <Download size={18} className="mr-2" /> Export
                     </button>
-                    <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
-                        <Plus size={20} className="mr-2" /> Add Employee
+                    <button className="btn btn-primary flex-1 md:flex-none shadow-xl shadow-primary/20" onClick={() => setIsModalOpen(true)}>
+                        <Plus size={20} className="mr-2" /> Add Professional
                     </button>
                 </div>
             </div>
 
-            <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
-                <div className="p-8 border-b border-border-color bg-white/[0.01]">
-                    <div className="relative" style={{ maxWidth: '450px' }}>
-                        <Search className="absolute text-text-secondary" style={{ left: '1rem', top: '50%', transform: 'translateY(-50%)' }} size={20} />
-                        <input type="text" placeholder="Search by name, role or team..." className="w-full" style={{ paddingLeft: '3rem' }} />
+            <div className="card !p-0 overflow-visible">
+                <div className="p-8 border-b border-white/5 bg-white/[0.01]">
+                    <div className="relative max-w-md group">
+                        <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
+                            <Search size={22} />
+                        </div>
+                        <input 
+                            type="text" 
+                            placeholder="Identify professional..." 
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 pl-16 pr-6 text-base font-medium focus:bg-white/[0.08] focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all outline-none" 
+                        />
                     </div>
                 </div>
 
                 <div className="table-container">
-                    <table>
+                    <table className="w-full border-collapse">
                         <thead>
-                            <tr>
-                                <th>Common Info</th>
-                                <th>Position</th>
-                                <th>Team</th>
-                                <th>Status</th>
-                                <th style={{ textAlign: 'right' }}>Actions</th>
+                            <tr className="bg-white/[0.02]">
+                                <th className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-text-muted">Member Details</th>
+                                <th className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-text-muted">Job Role</th>
+                                <th className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-text-muted">Department</th>
+                                <th className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-text-muted">Status</th>
+                                <th className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-text-muted text-right">Operations</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="divide-y divide-white/[0.05]">
                             {displayData.map((emp, i) => (
-                                <tr key={i} className="hover:bg-white/[0.02] transition-colors">
-                                    <td>
-                                        <div className="flex items-center">
-                                            <div className="avatar">{emp.name.charAt(0)}</div>
+                                <tr key={i} className="hover:bg-white/[0.01] transition-all group">
+                                    <td className="py-6 px-8">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-black text-primary text-xl border border-primary/10 shadow-inner">
+                                                {emp.name.charAt(0)}
+                                            </div>
                                             <div>
-                                                <div className="font-bold text-text-primary text-base">{emp.name}</div>
-                                                <div className="text-xs text-text-secondary font-medium">{emp.email}</div>
+                                                <div className="font-bold text-white text-lg tracking-tight">{emp.name}</div>
+                                                <div className="text-xs text-text-secondary font-medium tracking-wide">{emp.email}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
-                                        <div className="font-semibold text-text-primary">{emp.position || emp.role}</div>
+                                    <td className="py-6 px-8">
+                                        <div className="font-bold text-white/90">{emp.position || emp.role}</div>
                                     </td>
-                                    <td>
-                                        <span className="text-xs font-bold text-text-secondary bg-white/5 px-2 py-1 rounded-md border border-white/5 uppercase tracking-wide">
+                                    <td className="py-6 px-8">
+                                        <span className="text-[10px] font-black text-text-secondary bg-white/5 px-3 py-1.5 rounded-lg border border-white/5 uppercase tracking-widest">
                                             {emp.department || emp.dept}
                                         </span>
                                     </td>
-                                    <td>
-                                        <span className={`badge ${emp.status === 'Active' ? 'badge-success' : 'badge-warning'}`}>
-                                            {emp.status}
-                                        </span>
+                                    <td className="py-6 px-8">
+                                        <div className="flex items-center gap-2">
+                                            <div className={`w-2 h-2 rounded-full ${emp.status === 'Active' ? 'bg-secondary animate-pulse' : 'bg-accent'}`}></div>
+                                            <span className={`text-[11px] font-black uppercase tracking-widest ${emp.status === 'Active' ? 'text-secondary' : 'text-accent'}`}>
+                                                {emp.status}
+                                            </span>
+                                        </div>
                                     </td>
-                                    <td style={{ textAlign: 'right' }}>
-                                        <div className="flex justify-end gap-2">
+                                    <td className="py-6 px-8">
+                                        <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
                                             <button 
                                                 onClick={() => handleEdit(emp)}
-                                                className="hover:bg-white/5 text-text-secondary hover:text-white transition-all"
-                                                style={{ padding: '0.75rem', borderRadius: '0.75rem', border: 'none', background: 'transparent', cursor: 'pointer' }}
+                                                className="p-3 bg-white/5 rounded-xl text-text-secondary hover:bg-primary/20 hover:text-primary transition-all shadow-sm border border-white/5"
                                             >
                                                 <Edit2 size={16} />
                                             </button>
                                             <button 
                                                 onClick={() => handleDelete(emp._id)}
-                                                className="hover:bg-red-500/10 text-text-secondary transition-all cursor-pointer"
-                                                style={{ padding: '0.75rem', borderRadius: '0.75rem', border: 'none', background: 'transparent', color: 'inherit' }}
+                                                className="p-3 bg-white/5 rounded-xl text-text-secondary hover:bg-danger/20 hover:text-danger transition-all shadow-sm border border-white/5"
                                             >
-                                                <Trash2 size={16} color="red" />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
                                     </td>
@@ -195,11 +205,11 @@ const EmployeeList = () => {
                     </table>
                 </div>
                 
-                <div className="p-6 border-t border-border-color flex justify-between items-center bg-white/[0.01]">
-                    <span className="text-xs text-text-secondary font-bold uppercase tracking-widest">Showing {displayData.length} records</span>
-                    <div className="flex gap-2">
-                        <button className="btn btn-outline py-2 px-4 text-xs">Previous</button>
-                        <button className="btn btn-outline py-2 px-4 text-xs">Next</button>
+                <div className="p-8 border-t border-white/5 flex justify-between items-center bg-white/[0.01]">
+                    <span className="text-[10px] text-text-muted font-black uppercase tracking-[0.2em]">Total Members: {displayData.length}</span>
+                    <div className="flex gap-3">
+                        <button className="btn btn-outline py-2.5 px-6 text-xs border-white/10 hover:bg-white/5 transition-all">Previous</button>
+                        <button className="btn btn-primary py-2.5 px-6 text-xs shadow-lg shadow-primary/10 transition-all">Next Page</button>
                     </div>
                 </div>
             </div>

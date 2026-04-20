@@ -18,41 +18,58 @@ const Signup = () => {
     };
 
     return (
-        <div className="flex justify-center items-center h-screen w-full" style={{ backgroundColor: '#0a0f1d' }}>
-            <div className="card" style={{ width: '100%', maxWidth: '500px' }}>
-                <h2 className="text-3xl font-extrabold mb-6 text-center">Create <span className="gradient-text">Account</span></h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="mb-4">
-                            <label className="block text-text-secondary mb-1 text-sm">Name</label>
-                            <input type="text" className="w-full" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required />
+        <div className="flex justify-center items-center h-screen w-full relative overflow-hidden bg-[#020617]">
+            {/* Ambient Background Elements */}
+            <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 -translate-x-1/4"></div>
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-secondary/5 blur-[120px] rounded-full pointer-events-none translate-y-1/2 translate-x-1/4"></div>
+
+            <div className="card w-full max-w-[550px] relative z-10 border-white/5 backdrop-blur-3xl shadow-2xl">
+                <div className="text-center mb-10">
+                    <h2 className="text-4xl font-black mb-2 tracking-tighter">Join the <span className="gradient-text">Network</span></h2>
+                    <p className="text-text-secondary text-xs font-bold uppercase tracking-[0.2em]">Deploy your professional profile</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest mb-2 px-1">Full Identity</label>
+                            <input type="text" className="w-full" placeholder="e.g. Marcus Sterling" 
+                                value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required />
                         </div>
-                        <div className="mb-4">
-                            <label className="block text-text-secondary mb-1 text-sm">Email</label>
-                            <input type="email" className="w-full" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required />
+                        <div>
+                            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest mb-2 px-1">Secure Email</label>
+                            <input type="email" className="w-full" placeholder="name@company.com"
+                                value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required />
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="mb-4">
-                            <label className="block text-text-secondary mb-1 text-sm">Password</label>
-                            <input type="password" className="w-full" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} required />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest mb-2 px-1">Access Password</label>
+                            <input type="password" className="w-full" placeholder="••••••••"
+                                value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} required />
                         </div>
-                        <div className="mb-4">
-                            <label className="block text-text-secondary mb-1 text-sm">Role</label>
+                        <div>
+                            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest mb-2 px-1">System Privilege</label>
                             <select 
-                                className="w-full" 
-                                style={{ backgroundColor: '#0f172a', color: '#fff', padding: '0.9rem 1.1rem', borderRadius: '0.85rem', border: '1px solid var(--border-color)' }}
+                                className="w-full appearance-none bg-[#0f172a] border-white/10"
                                 value={formData.role} 
                                 onChange={(e) => setFormData({...formData, role: e.target.value})}
                             >
-                                <option value="Employee" style={{ background: '#0f172a', color: '#fff' }}>Employee (Portal)</option>
-                                <option value="HR" style={{ background: '#0f172a', color: '#fff' }}>HR (Admin Dashboard)</option>
+                                <option value="Employee">Employee (Member Portal)</option>
+                                <option value="HR">HR Admin (Master Control)</option>
                             </select>
                         </div>
                     </div>
-                    <button type="submit" className="btn btn-primary w-full mt-4 justify-center" style={{ padding: '0.75rem 0' }}>Sign Up</button>
-                    <p className="mt-4 text-center text-sm text-text-secondary">
-                        Already have an account? <Link to="/login" className="text-primary hover:underline">Login</Link>
+
+                    <div className="pt-4">
+                        <button type="submit" className="btn btn-primary w-full py-4 text-base shadow-xl shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] transition-all font-black">
+                            INITIALIZE ACCOUNT
+                        </button>
+                    </div>
+
+                    <p className="text-center text-sm text-text-secondary font-medium">
+                        Already established? <Link to="/login" className="text-primary font-bold hover:underline underline-offset-4 decoration-2">Login here</Link>
                     </p>
                 </form>
             </div>

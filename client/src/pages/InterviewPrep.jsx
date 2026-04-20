@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { HelpCircle, BrainCircuit, Loader2, Copy, Check, Sparkles } from 'lucide-react';
+import API_BASE_URL from '../config';
 
 const InterviewPrep = () => {
     const [role, setRole] = useState('');
@@ -13,7 +14,7 @@ const InterviewPrep = () => {
         if (!role) return alert("Please specify the role");
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:5000/api/ai/generate-questions', {
+            const res = await axios.post(`${API_BASE_URL}/ai/generate-questions`, {
                 role,
                 level
             });
@@ -42,8 +43,8 @@ const InterviewPrep = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                     <div className="md:col-span-2">
                         <label className="block mb-3 font-bold text-sm text-text-secondary uppercase tracking-wider">Target Position</label>
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             className="w-full text-lg py-3"
                             placeholder="e.g. Senior Product Designer"
                             value={role}
@@ -52,7 +53,7 @@ const InterviewPrep = () => {
                     </div>
                     <div>
                         <label className="block mb-3 font-bold text-sm text-text-secondary uppercase tracking-wider">Expertise Level</label>
-                        <select 
+                        <select
                             className="w-full text-lg py-3"
                             style={{ backgroundColor: '#0f172a', color: '#fff', borderRadius: '0.85rem', border: '1px solid var(--border-color)', padding: '0.9rem 1.1rem' }}
                             value={level}
@@ -67,7 +68,7 @@ const InterviewPrep = () => {
                     </div>
                 </div>
                 <div className="mt-8 flex justify-center">
-                    <button 
+                    <button
                         className="btn btn-primary px-12 py-4 rounded-2xl shadow-xl"
                         onClick={handleGenerate}
                         disabled={loading}
@@ -105,7 +106,7 @@ const InterviewPrep = () => {
                                 <div className="flex-1 w-full pt-2 overflow-hidden">
                                     <p className="text-[17px] leading-relaxed font-medium text-text-primary/90 break-words">{cleanQ}</p>
                                 </div>
-                                <button 
+                                <button
                                     onClick={() => handleCopy(cleanQ, i)}
                                     className="opacity-100 md:opacity-0 md:group-hover:opacity-100 p-4 hover:bg-white/10 rounded-xl transition-all border border-border-color shadow-lg bg-[#0b0e14] shrink-0 self-end md:self-start"
                                     title="Copy to clipboard"

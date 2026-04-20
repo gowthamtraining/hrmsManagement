@@ -51,6 +51,14 @@ app.use((req, res) => {
     res.status(404).json({ error: `Path ${req.url} with method ${req.method} not found` });
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 AI HRMS Server running on port ${PORT}`);
-});
+// Health check for Vercel
+app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok' }));
+
+// Start server if not in production
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`🚀 AI HRMS Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;

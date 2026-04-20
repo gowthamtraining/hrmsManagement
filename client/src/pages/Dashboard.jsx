@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Users, FileCheck, Calendar, TrendingUp, Sparkles, ArrowUpRight } from 'lucide-react';
 
@@ -35,7 +36,7 @@ const Dashboard = () => {
     const [showAiModal, setShowAiModal] = useState(false);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/dashboard')
+        axios.get(`${API_BASE_URL}/dashboard`)
             .then(res => setStats(res.data))
             .catch(err => console.error(err));
     }, []);
@@ -43,7 +44,7 @@ const Dashboard = () => {
     const handleAISummary = async () => {
         setIsAiLoading(true);
         try {
-            const res = await axios.post('http://localhost:5000/api/ai/dashboard-summary', { stats });
+            const res = await axios.post(`${API_BASE_URL}/ai/dashboard-summary`, { stats });
             setAiSummary(res.data.summary);
             setShowAiModal(true);
         } catch (err) {

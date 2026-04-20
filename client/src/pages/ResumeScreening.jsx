@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Upload, Search, CheckCircle, AlertCircle, Loader2, FileText, Briefcase } from 'lucide-react';
+import API_BASE_URL from '../config';
 
 const ResumeScreening = () => {
     const [resumeText, setResumeText] = useState('');
@@ -12,7 +13,7 @@ const ResumeScreening = () => {
         if (!resumeText || !jd) return alert("Please provide both resume and job description.");
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:5000/api/ai/analyze-resume', {
+            const res = await axios.post(`${API_BASE_URL}/ai/analyze-resume`, {
                 resumeText,
                 jobDescription: jd
             });
@@ -36,7 +37,7 @@ const ResumeScreening = () => {
                     <label className="mb-4 font-bold flex items-center text-text-primary">
                         <Briefcase size={20} className="mr-2 text-primary" /> Job Description
                     </label>
-                    <textarea 
+                    <textarea
                         className="h-[300px] text-sm"
                         placeholder="Paste the target job description here..."
                         value={jd}
@@ -47,7 +48,7 @@ const ResumeScreening = () => {
                     <label className="mb-4 font-bold flex items-center text-text-primary">
                         <FileText size={20} className="mr-2 text-primary" /> Candidate Resume
                     </label>
-                    <textarea 
+                    <textarea
                         className="h-[300px] text-sm"
                         placeholder="Paste resume text or extract content here..."
                         value={resumeText}
@@ -57,7 +58,7 @@ const ResumeScreening = () => {
             </div>
 
             <div className="flex justify-center mb-12">
-                <button 
+                <button
                     className="btn btn-primary px-10 py-4 text-lg"
                     onClick={handleAnalyze}
                     disabled={loading}
@@ -79,14 +80,14 @@ const ResumeScreening = () => {
                             <span className="text-4xl font-black text-primary">{result.score}%</span>
                         </div>
                     </div>
-                    
+
                     <div className="mb-8">
                         <h3 className="mb-3 text-lg">Executive Summary</h3>
                         <p className="text-text-secondary leading-relaxed p-4 bg-white/5 rounded-xl border border-white/5">
                             {result.summary}
                         </p>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="p-6 bg-secondary/5 rounded-2xl border border-secondary/20">
                             <h4 className="text-secondary font-bold mb-4 flex items-center">
